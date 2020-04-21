@@ -184,13 +184,12 @@ abstract class ClientAbstract implements ApiInterface, NotificationInterface
             throw new ApiException('Notification data format error');
         }
         $headers = $this->getNotificationHeaders();
-        $signDate = isset($headers['date-gmt']) ? trim($headers['date-gmt']) : '';
-        $dataSignature = isset($headers['sign']) ? trim($headers['sign']) : '';
+        $signDate = isset($headers['Date-Gmt']) ? trim($headers['Date-Gmt']) : '';
+        $dataSignature = isset($headers['Sign']) ? trim($headers['Sign']) : '';
         if (!$dataSignature || !$signDate) {
             throw new ApiException('Notification missing data signature');
         }
 
-        // TODO validate response data vs header signature
         $dataToString = $this->convertToString($data);
         if ($this->isRsaKeyEnabled()) {
             $rawString = $dataToString . $signDate;
