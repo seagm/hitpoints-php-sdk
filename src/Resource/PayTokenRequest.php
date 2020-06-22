@@ -60,11 +60,11 @@ class PayTokenRequest extends RequestAbstract
     protected $amount;
 
     /**
-     * When payment success, HitPoints will redirect user to the specified url address
+     * HitPoints will jump back to user specified url address
      * It's optional and max length is 255
      * @var string
      */
-    protected $redirect_url;
+    protected $return_url;
 
     /**
      * @param string $reference_id
@@ -115,11 +115,11 @@ class PayTokenRequest extends RequestAbstract
     }
 
     /**
-     * @param string $redirect_url
+     * @param string $return_url
      */
-    public function setRedirectUrl($redirect_url)
+    public function setReturnUrl($return_url)
     {
-        $this->redirect_url = $redirect_url;
+        $this->return_url = $return_url;
     }
 
 }
