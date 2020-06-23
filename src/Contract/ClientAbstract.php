@@ -105,7 +105,7 @@ abstract class ClientAbstract implements ApiInterface, NotificationInterface
         } catch (ApiClientException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new ApiException($e->getMessage());
+            throw new ApiException($e->getMessage(), $e->getCode());
         }
     }
 
@@ -128,7 +128,7 @@ abstract class ClientAbstract implements ApiInterface, NotificationInterface
         }
         if ($data['code'] !== 200) {
             $apiErrorMessage = isset($data['message']) ? $data['message'] : 'Api error, no message response';
-            throw new ApiException($apiErrorMessage);
+            throw new ApiException($apiErrorMessage, (int)$data['code']);
         }
         $responseData = isset($data['data']) ? $data['data'] : [];
         $this->validateResponseSignature($responseData);

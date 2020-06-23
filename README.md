@@ -36,7 +36,7 @@ composer require seagm-libs/hitpoints
 ```PHP
 // 配置参数，根据不同环境修改为相应的参数
 $options = [
-    'app_id' => 'gIoyQaaZ1zICMtJoXYOrw22o',
+    'app_key' => 'gIoyQaaZ1zICMtJoXYOrw22o',
     'app_secret' => '8zNab91jd77V7cPx5hq62jh9F_kz4GK8NeoLszLTCkGg',
     'api_base' => 'http://open-api.hitpoints.test',
     'rsa_private_key_file'=>'',
@@ -49,7 +49,7 @@ $options = [
 
 | 参数名称   | 参数说明                        | 示例值                      |
 | ---------- | ------------------------------- | --------------------------- |
-| App_id | HitPoints开发者ID      |  |
+| App_key | HitPoints开发者ID      |  |
 | App_secret | HitPoints开发者密钥 |                             |
 | Api_base | HitPoints API URL | https://open-api.hitpoints.com |
 | rsa_private_key_file | Rsa私钥证书文件路径 | /var/cert/rsa_private_key.pem |
