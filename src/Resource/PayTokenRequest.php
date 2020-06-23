@@ -67,13 +67,6 @@ class PayTokenRequest extends RequestAbstract
     protected $return_url;
 
     /**
-     * When payment success, HitPoints will redirect user to the specified url address
-     * It's optional and max length is 255
-     * @var string
-     */
-    protected $return_url;
-
-    /**
      * @param string $reference_id
      */
     public function setReferenceId($reference_id)
@@ -126,13 +119,6 @@ class PayTokenRequest extends RequestAbstract
      */
     public function setReturnUrl($return_url)
     {
-        $this->return_url = $return_url;
-    }
-
-    /**
-     * @param $return_url
-     */
-    public function setReturnUrl($return_url){
         $this->return_url = $return_url;
     }
 
