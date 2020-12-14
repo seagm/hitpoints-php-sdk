@@ -1,6 +1,6 @@
 ## HitPoints API PHP SDK
 
-该SDK封装了从Web服务端调用HitPoints API的方法
+The SDK encapsulates the method of calling HitPoints API from the web server
 
 
 ## Install
