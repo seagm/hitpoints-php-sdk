@@ -77,7 +77,7 @@ abstract class ClientAbstract implements ApiInterface, NotificationInterface
         $headers = $requestData->createRequestHeaders();
         $requestMethod = $requestData->getRequestMethod();
         $apiUri = $requestData->getApiUri();
-        $httpClient = new Client(['timeout' => 15, 'base_uri' => HitPoints::getApiUrlBase()]);
+        $httpClient = new Client(['timeout' => 60, 'base_uri' => HitPoints::getApiUrlBase()]);
         try {
             switch ($requestMethod) {
                 case RequestMethod::POST:
