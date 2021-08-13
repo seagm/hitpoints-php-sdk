@@ -131,7 +131,9 @@ abstract class ClientAbstract implements ApiInterface, NotificationInterface
             throw new ApiException($apiErrorMessage, (int)$data['code']);
         }
         $responseData = isset($data['data']) ? $data['data'] : [];
-        $this->validateResponseSignature($responseData);
+        if (!empty($responseData)) {
+            $this->validateResponseSignature($responseData);
+        }
         return $data;
     }
 
