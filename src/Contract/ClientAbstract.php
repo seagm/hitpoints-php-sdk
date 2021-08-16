@@ -145,12 +145,12 @@ abstract class ClientAbstract implements ApiInterface, NotificationInterface
      */
     private function validateResponseSignature($data)
     {
-        $responseHeader = $this->getApiResponseHeaders();
-        $dataSignature = isset($responseHeader['Sign'][0]) ? $responseHeader['Sign'][0] : '';
+        $responseHeader = $this->formatHeaders($this->getApiResponseHeaders());
+        $dataSignature = isset($responseHeader['sign'][0]) ? $responseHeader['sign'][0] : '';
         if (!$dataSignature) {
             throw new ApiException('Response missing signature');
         }
-        $signDate = isset($responseHeader['Date-GMT'][0]) ? $responseHeader['Date-GMT'][0] : '';
+        $signDate = isset($responseHeader['date-gmt'][0]) ? $responseHeader['date-gmt'][0] : '';
         if (!$signDate) {
             throw new ApiException('Response missing Date-GMT');
         }
@@ -185,9 +185,9 @@ abstract class ClientAbstract implements ApiInterface, NotificationInterface
         if (!$data) {
             throw new ApiException('Notification data format error');
         }
-        $headers = $this->getNotificationHeaders();
-        $signDate = isset($headers['Date-Gmt']) ? trim($headers['Date-Gmt']) : '';
-        $dataSignature = isset($headers['Sign']) ? trim($headers['Sign']) : '';
+        $headers = $this->formatHeaders($this->getNotificationHeaders());
+        $signDate = isset($headers['date-gmt']) ? trim($headers['date-gmt']) : '';
+        $dataSignature = isset($headers['sign']) ? trim($headers['sign']) : '';
         if (!$dataSignature || !$signDate) {
             throw new ApiException('Notification missing data signature');
         }
@@ -206,6 +206,22 @@ abstract class ClientAbstract implements ApiInterface, NotificationInterface
         }
 
         return $data;
+    }
+
+    /**
+     * change header key to lowercase
+     * @param $headers
+     * @return array
+     */
+    public function formatHeaders($headers)
+    {
+        $formatted = [];
+        if (is_array($headers)) {
+            foreach ($headers as $key => $val) {
+                $formatted[strtolower($key)] = $val;
+            }
+        }
+        return $formatted;
     }
 
     /**
