@@ -75,7 +75,7 @@ class PinPayRequest extends RequestAbstract
      *
      * @var string
      */
-    protected $cardType;
+    protected $card_type;
 
     /**
      * @param string $reference_id
@@ -138,6 +138,6 @@ class PinPayRequest extends RequestAbstract
      */
     public function setCardType($cardType)
     {
-        $this->cardType = $cardType;
+        $this->card_type = $cardType;
     }
 }
