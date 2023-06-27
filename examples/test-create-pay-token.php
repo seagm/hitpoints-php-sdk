@@ -22,7 +22,7 @@ try {
     $payToken = $api->newPayTokenRequest();
     // set request parameters
     $payToken->setReferenceId($merchantOutTradeId); // required
-    $payToken->setRedirectUrl($paySuccessPageUrl); // optional
+    $payToken->setReturnUrl($paySuccessPageUrl); // optional
     $payToken->setCurrency('CNY'); // optional
     //$payToken->setAmount('10.00'); // optional
     $payToken->setBody('Game direct top up'); // optional
