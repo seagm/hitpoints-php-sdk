@@ -67,6 +67,17 @@ class PayTokenRequest extends RequestAbstract
     protected $return_url;
 
     /**
+     * If publisher customized multiple card types
+     * can specify the card type that the user is allowed to use
+     * Default = hitpoints
+     * if you need to specify multiples, just separate each type with commas,
+     * e.g. gift-card,hitpoints,game-pin
+     *
+     * @var string
+     */
+    protected $cardType;
+
+    /**
      * @param string $reference_id
      */
     public function setReferenceId($reference_id)
@@ -122,4 +133,11 @@ class PayTokenRequest extends RequestAbstract
         $this->return_url = $return_url;
     }
 
+    /**
+     * @param string $cardType
+     */
+    public function setCardType($cardType)
+    {
+        $this->cardType = $cardType;
+    }
 }

@@ -67,6 +67,17 @@ class PinPayRequest extends RequestAbstract
     protected $amount;
 
     /**
+     * If publisher customized multiple card types
+     * can specify the card type that the user is allowed to use
+     * Default = hitpoints
+     * if you need to specify multiples, just separate each type with commas,
+     * e.g. gift-card,hitpoints,game-pin
+     *
+     * @var string
+     */
+    protected $cardType;
+
+    /**
      * @param string $reference_id
      */
     public function setReferenceId($reference_id)
@@ -120,5 +131,13 @@ class PinPayRequest extends RequestAbstract
     public function setPinKey($pin_key)
     {
         $this->pin_key = $pin_key;
+    }
+
+    /**
+     * @param string $cardType
+     */
+    public function setCardType($cardType)
+    {
+        $this->cardType = $cardType;
     }
 }
