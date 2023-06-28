@@ -6,11 +6,11 @@ use SeaGM\HitPoints\Exception\ApiException;
 
 include '../vendor/autoload.php';
 $options = [
-    'app_key' => 'gIoyQaKZ1zIQqBVlzR_BxrJ4',
-    'app_secret' => 'yelyHt6Y0jRkeXwFDiMmA-APSWj88eELzkvIxN6ZS1MHgWET',
+    'app_key' => 'gIozQaeZ1zKwAXm8EjMjggw_',
+    'app_secret' => 'gs57JsL91jdMuQSUxxBFOrijFY-ln11GioJodLSOX_lkVg',
     'api_base' => 'http://api.hitpoints.test',
-    'rsa_private_key_file' => './cert/rsa_private_key.pem',
-    'rsa_server_key_file' => './cert/rsa_server_key.pem'
+//    'rsa_private_key_file' => './cert/rsa_private_key.pem',
+//    'rsa_server_key_file' => './cert/rsa_server_key.pem'
 ];
 
 // Merchant has created trade order and call HitPoints pay.
@@ -23,9 +23,10 @@ try {
     // set request parameters
     $payToken->setReferenceId($merchantOutTradeId); // required
     $payToken->setReturnUrl($paySuccessPageUrl); // optional
-    $payToken->setCurrency('CNY'); // optional
-    //$payToken->setAmount('10.00'); // optional
+    $payToken->setCurrency('USD'); // optional
+    $payToken->setAmount('10.00'); // optional
     $payToken->setBody('Game direct top up'); // optional
+    $payToken->setCardType('seagm-gift-card');
     $payToken->setDetail('Game top up with hitpoints currency MYR and amount=10.'); // optional
     $payToken->setAttach('order=12&transaction=1&user_name=bbc'); // optional
 
