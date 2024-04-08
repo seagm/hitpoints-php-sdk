@@ -78,6 +78,13 @@ class PayTokenRequest extends RequestAbstract
     protected $card_type;
 
     /**
+     * Specify the category ids that you forbid user to use for the transaction
+     * multi-category, concat with comma, eg. 1234,1223
+     * @var string
+     */
+    protected $exclude_category;
+
+    /**
      * @param string $reference_id
      */
     public function setReferenceId($reference_id)
@@ -140,4 +147,13 @@ class PayTokenRequest extends RequestAbstract
     {
         $this->card_type = $cardType;
     }
+
+    /**
+     * @param string $exclude_category
+     */
+    public function setExcludeCategory($exclude_category)
+    {
+        $this->exclude_category = $exclude_category;
+    }
+
 }
