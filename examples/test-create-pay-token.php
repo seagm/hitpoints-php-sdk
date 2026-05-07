@@ -8,7 +8,7 @@ include '../vendor/autoload.php';
 $options = [
     'app_key' => 'gIozQaeZ1zKwAXm8EjMjggw_',
     'app_secret' => 'gs57JsL91jdMuQSUxxBFOrijFY-ln11GioJodLSOX_lkVg',
-    'api_base' => 'http://api.hitpoints.test',
+    'api_base' => 'http://onepin.seagm.test',
 //    'rsa_private_key_file' => './cert/rsa_private_key.pem',
 //    'rsa_server_key_file' => './cert/rsa_server_key.pem'
 ];
@@ -26,7 +26,7 @@ try {
     $payToken->setCurrency('USD'); // optional
     $payToken->setAmount('10.00'); // optional
     $payToken->setBody('Game direct top up'); // optional
-    $payToken->setCardType('seagm-gift-card');
+//    $payToken->setCardType('seagm-gift-card');
     $payToken->setDetail('Game top up with hitpoints currency MYR and amount=10.'); // optional
     $payToken->setAttach('order=12&transaction=1&user_name=bbc'); // optional
 
