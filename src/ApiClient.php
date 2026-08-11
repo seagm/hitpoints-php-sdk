@@ -9,6 +9,7 @@ use SeaGM\HitPoints\Resource\OrderQueryRequest;
 use SeaGM\HitPoints\Resource\PayTokenRequest;
 use SeaGM\HitPoints\Resource\PinPayRequest;
 use SeaGM\HitPoints\Resource\PinQueryRequest;
+use SeaGM\HitPoints\Resource\PinRevokeRequest;
 use SeaGM\HitPoints\Resource\QueryReloadRequest;
 
 /**
@@ -74,6 +75,14 @@ class ApiClient extends ClientAbstract
     public function newOrderQueryRequest()
     {
         return new OrderQueryRequest();
+    }
+
+    /**
+     * @return PinRevokeRequest
+     */
+    public function newRevokePinRequest()
+    {
+        return new PinRevokeRequest();
     }
 
 }

@@ -119,7 +119,7 @@ abstract class ClientAbstract implements ApiInterface, NotificationInterface
         if (!$this->apiResponseBody) {
             throw new ApiException('Api error,response body');
         }
-        $data = json_decode($this->apiResponseBody, true);
+        $data = json_decode($this->apiResponseBody, true);var_dump($data);
         if (!$data) {
             throw new ApiException('Api error,response body decode fail');
         }
