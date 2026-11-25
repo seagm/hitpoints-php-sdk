@@ -2,6 +2,8 @@
 
 该SDK封装了从Web服务端调用HitPoints API的方法
 
+运行环境要求：PHP >= 5.6，并启用 `curl`、`json`、`openssl` 扩展，无需额外安装HTTP客户端库。
+
 
 ## 安装
 

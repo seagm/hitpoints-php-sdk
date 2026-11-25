@@ -2,6 +2,8 @@
 
 The SDK encapsulates the method of calling HitPoints API from the web server
 
+Requirements: PHP >= 5.6 with the `curl`, `json` and `openssl` extensions enabled. No extra HTTP client library is needed.
+
 
 ## Install
 

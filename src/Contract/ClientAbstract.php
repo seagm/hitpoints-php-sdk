@@ -2,7 +2,6 @@
 
 namespace SeaGM\HitPoints\Contract;
 
-use GuzzleHttp\Client;
 use SeaGM\HitPoints\Concern\ApiTrait;
 use SeaGM\HitPoints\Exception\ApiClientException;
 use SeaGM\HitPoints\Exception\ApiException;
@@ -77,36 +76,142 @@ abstract class ClientAbstract implements ApiInterface, NotificationInterface
         $headers = $requestData->createRequestHeaders();
         $requestMethod = $requestData->getRequestMethod();
         $apiUri = $requestData->getApiUri();
-        $httpClient = new Client(['timeout' => 60, 'base_uri' => HitPoints::getApiUrlBase()]);
         try {
             switch ($requestMethod) {
                 case RequestMethod::POST:
-                    $response = $httpClient->request(RequestMethod::POST, $apiUri, [
-                        'form_params' => $apiParameters,
-                        'headers' => $headers
-                    ]);
-                    break;
                 case RequestMethod::GET:
-                    $response = $httpClient->request(RequestMethod::GET, $apiUri, [
-                        'query' => $apiParameters,
-                        'headers' => $headers
-                    ]);
                     break;
                 default:
                     throw new ApiClientException('invalid request method');
             }
-            $this->apiStatusCode = $response->getStatusCode();
+            $response = $this->sendHttpRequest($requestMethod, $apiUri, $apiParameters, $headers);
+            $this->apiStatusCode = $response['statusCode'];
             if ($this->apiStatusCode !== 200) {
                 throw new ApiException('Invalid http response status');
             }
-            $this->apiResponseBody = $response->getBody()->getContents();
-            $this->apiResponseHeaders = $response->getHeaders();
+            $this->apiResponseBody = $response['body'];
+            $this->apiResponseHeaders = $response['headers'];
             return $this->parseResponse();
         } catch (ApiClientException $e) {
             throw $e;
         } catch (\Exception $e) {
             throw new ApiException($e->getMessage(), $e->getCode());
         }
+    }
+
+    /**
+     * Send http request with the native curl extension
+     *
+     * @param string $requestMethod
+     * @param string $apiUri
+     * @param array $apiParameters
+     * @param array $headers
+     * @return array ['statusCode' => int, 'body' => string, 'headers' => array]
+     * @throws ApiException
+     */
+    private function sendHttpRequest($requestMethod, $apiUri, array $apiParameters, array $headers)
+    {
+        if (!function_exists('curl_init')) {
+            throw new ApiException('cURL extension is required by HitPoints API Client');
+        }
+
+        $responseHeaders = [];
+        $isPost = $requestMethod === RequestMethod::POST;
+        $url = $this->buildRequestUrl($apiUri, $isPost ? [] : $apiParameters);
+        $curlOptions = [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS => 5,
+            CURLOPT_TIMEOUT => 60,
+            CURLOPT_HTTPHEADER => $this->formatRequestHeaders($headers),
+            CURLOPT_HEADERFUNCTION => function ($curl, $headerLine) use (&$responseHeaders) {
+                $line = trim($headerLine);
+                if (stripos($line, 'HTTP/') === 0) {
+                    // new response block, e.g. redirect or "100 Continue", drop previous headers
+                    $responseHeaders = [];
+                } elseif (strpos($line, ':') !== false) {
+                    list($name, $value) = explode(':', $line, 2);
+                    // keep the previous header shape: header name => list of values
+                    $responseHeaders[trim($name)][] = trim($value);
+                }
+                return strlen($headerLine);
+            },
+        ];
+        if ($isPost) {
+            $curlOptions[CURLOPT_POST] = true;
+            $curlOptions[CURLOPT_POSTFIELDS] = http_build_query($apiParameters);
+        } else {
+            $curlOptions[CURLOPT_HTTPGET] = true;
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, $curlOptions);
+        $body = curl_exec($curl);
+        if ($body === false) {
+            $errorMessage = curl_error($curl);
+            $errorCode = curl_errno($curl);
+            curl_close($curl);
+            throw new ApiException('Http request fail: ' . $errorMessage, $errorCode);
+        }
+        $statusCode = (int)curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+        curl_close($curl);
+
+        return [
+            'statusCode' => $statusCode,
+            'body' => (string)$body,
+            'headers' => $responseHeaders,
+        ];
+    }
+
+    /**
+     * Build the full request url, resolving the api uri against the configured api base
+     *
+     * @param string $apiUri
+     * @param array $queryParameters
+     * @return string
+     */
+    private function buildRequestUrl($apiUri, array $queryParameters)
+    {
+        $baseUrl = $this->getApiUrlBase();
+        if (preg_match('#^https?://#i', $apiUri)) {
+            $url = $apiUri;
+        } elseif (substr($apiUri, 0, 1) === '/') {
+            // an absolute path replaces the path of the base url, same as the previous base_uri rule
+            $baseParts = parse_url($baseUrl);
+            $url = isset($baseParts['scheme']) ? $baseParts['scheme'] . '://' : '';
+            $url .= isset($baseParts['host']) ? $baseParts['host'] : '';
+            $url .= isset($baseParts['port']) ? ':' . $baseParts['port'] : '';
+            $url .= $apiUri;
+        } else {
+            $url = rtrim($baseUrl, '/') . '/' . ltrim($apiUri, '/');
+        }
+
+        if (!empty($queryParameters)) {
+            $queryString = http_build_query($queryParameters, '', '&', PHP_QUERY_RFC3986);
+            if ($queryString !== '') {
+                $url .= (strpos($url, '?') === false ? '?' : '&') . $queryString;
+            }
+        }
+        return $url;
+    }
+
+    /**
+     * Convert header array to curl header lines
+     *
+     * @param array $headers
+     * @return array
+     */
+    private function formatRequestHeaders(array $headers)
+    {
+        $headerLines = [];
+        foreach ($headers as $name => $value) {
+            if (is_array($value)) {
+                $value = implode(', ', $value);
+            }
+            $headerLines[] = $name . ': ' . $value;
+        }
+        return $headerLines;
     }
 
     /**
