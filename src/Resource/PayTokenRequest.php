@@ -85,6 +85,13 @@ class PayTokenRequest extends RequestAbstract
     protected $exclude_category;
 
     /**
+     * Specify the category ids that you only allow user to use for the transaction
+     * multicategory, concat with comma, eg. 1234,1223
+     * @var string
+     */
+    protected $include_category;
+
+    /**
      * @param string $reference_id
      */
     public function setReferenceId($reference_id)
@@ -156,4 +163,11 @@ class PayTokenRequest extends RequestAbstract
         $this->exclude_category = $exclude_category;
     }
 
+    /**
+     * @param string $include_category
+     */
+    public function setIncludeCategory($include_category)
+    {
+        $this->include_category = $include_category;
+    }
 }
